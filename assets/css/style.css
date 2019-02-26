@@ -9,6 +9,13 @@ h1 { display: block; text-align: center;
 	font-family: Georgia, Times, serif;
 }
 
+#scissors.active,
+#paper.active,
+#rock.active,
+#scissors:active,
+#paper:active,
+#rock:active { border-color: yellow; color: yellow; }
+
 #directions-text { 
 	display: block;
 	text-align: center;
@@ -21,6 +28,7 @@ div {
 	font-family: Helvetica, Arial, sans-serif !important;
 }
 .results { 
+	text-align: center;
 	display: block; 
 	width: 90%;
 	max-width: 500px;
@@ -96,4 +104,20 @@ div {
 	color: #15fc03;
 	opacity: 1;
 }
+
+@media (max-width: 400px) {
+	.status { 
+		margin: 30px auto;
+	}
+	#wins,
+	#losses,
+	#ties {
+		display: inline-block;
+		float: none;
+		width: 29%;
+		margin: 0 3px 10px 0;
+	}
+
+}
+
 
