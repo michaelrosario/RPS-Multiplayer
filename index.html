@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Multiplayer Rock Paper Scissors</title>
+
+  <!-- MEYERWEB RESET CSS -->
+  <link rel="stylesheet" href="./assets/css/reset.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+   <!-- jQuery Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+
+</head>
+
+<body>
+
+  <div>
+    
+    <h1>Multiplayer Rock, Paper or Scissors</h1>
+    <p id="directions-text">Press <span>r</span> , <span>p</span> or <span>s</span> to start playing!</p>
+
+      
+
+    <div class="results-animated">
+      <div class="left">
+          <img src="./assets/images/left-r.png">
+      </div>
+      <div class="status">READY</div>
+      <div class="right">
+          <img src="./assets/images/right-r.png">
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="clearfix" style="height: 15px;"></div>
+    <p id="userchoice-text"></p>
+    <p id="computerchoice-text"></p>
+    
+    <div class="results">
+      <p id="wins"></p>
+      <p id="losses"></p>
+      <p id="ties"></p>
+    </div>
+    
+  </div>
+
+  <script type="text/javascript">
+
+  $(document).ready(function(){
+    // Creates an array that lists out all of the options (Rock, Paper, or Scissors).
+    var computerChoices = ["r", "p", "s"];
+
+    // Creating variables to hold the number of wins, losses, and ties. They start at 0.
+    var wins = 0;
+    var losses = 0;
+    var ties = 0;
+    var round = 1;
+   
+    $("#wins").html(`<span>wins:</span> ${wins}`);
+    $("#losses").html(`<span>losses:</span> ${losses}`);
+    $("#ties").html(`<span>ties:</span> ${ties}`);
+
+    var ready = true;
+    $(".status").addClass("ready");
+
+    // This function is run whenever the user presses a key.
+    document.onkeyup = function(event) {        
+
+        // Determines which key was pressed.
+        var userGuess = event.key.toLowerCase();
+
+        // Randomly chooses a choice from the options array. This is the Computer's guess.
+        var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+
+        // Reworked our code from last step to use "else if" instead of lots of if statements.
+
+        // This logic determines the outcome of the game (win/loss/tie), and increments the appropriate number
+
+        if (((userGuess === "r") || (userGuess === "p") || (userGuess === "s")) && ready) {
+
+          ready = false;
+
+          $(".status").html(`Round ${round++}`)
+
+          $(".status").removeClass("ready");
+
+          $(".left").addClass("start")
+          .css({'background':`url(./assets/images/left-${userGuess}.png) center center no-repeat`,'background-size':'contain'})
+          .find('img')
+          .animate({'opacity':0},1000);
+
+          $(".right").addClass("start")
+            .css({'background':`url(./assets/images/right-${computerGuess}.png) center center no-repeat`,'background-size':'contain'})
+            .find('img')
+            .animate({'opacity':0},1000);
+
+          if ((userGuess === "r" && computerGuess === "s") ||
+            (userGuess === "s" && computerGuess === "p") || 
+            (userGuess === "p" && computerGuess === "r")) {
+            
+            setTimeout(function(){ 
+              wins++;
+              $("#wins").addClass("active"); 
+              $("#wins").html(`<span>wins:</span> ${wins}`);
+            }, 500 );
+
+
+          } else if (userGuess === computerGuess) {
+            
+            
+            setTimeout(function(){ 
+              ties++;
+               $("#ties").addClass("active");
+               $("#ties").html(`<span>ties:</span> ${ties}`);  
+             }, 500 );
+          
+          } else {
+          
+            setTimeout(function(){ 
+              losses++;
+              $("#losses").addClass("active");
+              $("#losses").html(`<span>losses:</span> ${losses}`);
+            }, 500 );
+          
+          }
+
+          setTimeout(function(){
+
+             $("#losses,#wins,#ties").removeClass("active");
+
+          },1000);
+
+          setTimeout(function(){
+
+              ready = true;
+              $(".status").html("READY").addClass("ready");
+              $(".right,.left").removeClass("start").find("img").animate({'opacity':1},0);
+
+          },2000);
+
+          
+          
+      
+        };
+
+      }
+
+  });
+
+  </script>
+
+</body>
+
+</html>
