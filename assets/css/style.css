@@ -9,6 +9,13 @@ h1 { display: block; text-align: center;
 	font-family: Georgia, Times, serif;
 }
 
+#scissors:hover,
+#paper:hover,
+#rock:hover {
+	border-color: #15fc03; color: #15fc03;
+	cursor: pointer;
+}
+
 #scissors.active,
 #paper.active,
 #rock.active,
