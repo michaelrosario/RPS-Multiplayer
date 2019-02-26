@@ -13,7 +13,18 @@
   <link rel="stylesheet" href="./assets/css/style.css">
 
    <!-- jQuery Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134646521-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-134646521-1');
+    </script>
+
 
 </head>
 
@@ -22,28 +33,42 @@
   <div>
     
     <h1>Multiplayer Rock, Paper or Scissors</h1>
-    <p id="directions-text">Press <span id="rock" class="button">r</span> , <span id="paper" class="button">p</span> or <span id="scissors" class="button">s</span> to start playing!</p>
+    <p id="directions-text" style="display: none;">Press <span id="rock" class="button">r</span> , <span id="paper" class="button">p</span> or <span id="scissors" class="button">s</span> to start playing!</p>
 
-    <div class="results-animated">
-      <div class="left">
-          <img src="./assets/images/left-r.png">
+    <form class="player-start">
+
+      <p>Please enter your name:</p>
+      <input id="player-input" class="player" type="text" value='' placeholder="Your name">
+      <button class="start">Start</button>
+
+    </form>
+
+    <div class="game">
+      
+      <div class="results-animated">
+        <div class="player1">Player 1</div>
+        <div class="player2">Computer</div>
+        <div class="left">
+            <img src="./assets/images/left-r.png">
+        </div>
+        <div class="status">READY</div>
+        <div class="right">
+            <img src="./assets/images/right-r.png">
+        </div>
+        <div class="clearfix"></div>
       </div>
-      <div class="status">READY</div>
-      <div class="right">
-          <img src="./assets/images/right-r.png">
+      <div class="clearfix" style="height: 15px;"></div>
+      
+      <div class="results">
+        <p id="wins"></p>
+        <p id="ties"></p>
+        <p id="losses"></p>
       </div>
-      <div class="clearfix"></div>
-    </div>
-    <div class="clearfix" style="height: 15px;"></div>
-    <p id="userchoice-text"></p>
-    <p id="computerchoice-text"></p>
-    
-    <div class="results">
-      <p id="wins"></p>
-      <p id="losses"></p>
-      <p id="ties"></p>
-    </div>
-    
+
+      <div class="challenger">
+        Waiting for Challenger <span class="dots"></span>
+      </div>
+      </div>
   </div>
 
   <script src="./assets/js/game.js"></script>

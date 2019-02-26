@@ -1,3 +1,28 @@
+var ready = false;
+
+$(".start").on("click",function(e){
+  e.preventDefault();
+  $(".player-start").submit();
+});
+
+$(".player-start input").on("focus",function(){
+  $(this).parent().removeClass("error")
+});
+
+$(".player-start").on("submit",function(e){
+  e.preventDefault();
+  if( $(".player").val().length < 2 ){
+    $(this).addClass("error");
+  } else {
+    $(".player1").text($(".player").val());
+    $(".player-start").slideUp();
+    $("#directions-text").fadeIn();
+    $(".game").fadeIn();
+    ready = true;
+  }
+
+});
+
 // Creates an array that lists out all of the options (Rock, Paper, or Scissors).
     var computerChoices = ["r", "p", "s"];
 
@@ -11,11 +36,13 @@
     $("#losses").html(`<span>losses:</span> ${losses}`);
     $("#ties").html(`<span>ties:</span> ${ties}`);
 
-    var ready = true;
     $(".status").addClass("ready");
 
     // This function is run whenever the user presses a key.
-    document.onkeyup = function(event) {        
+    document.onkeyup = function(event) {
+      if(event.target.id === 'player-input'){
+        return; // exclude on key up on input
+      }  
 
       runGame(event.key);
         
@@ -25,7 +52,7 @@
 
       runGame($(this).text());
       return false;
-      
+
     });
 
     function runGame(input) {
@@ -60,12 +87,12 @@
           $(".left").addClass("start")
           .css({'background':`url(./assets/images/left-${userGuess}.png) center center no-repeat`,'background-size':'contain'})
           .find('img')
-          .animate({'opacity':0},1000);
+          .animate({'opacity':0},500);
 
           $(".right").addClass("start")
             .css({'background':`url(./assets/images/right-${computerGuess}.png) center center no-repeat`,'background-size':'contain'})
             .find('img')
-            .animate({'opacity':0},1000);
+            .animate({'opacity':0},500);
 
           if ((userGuess === "r" && computerGuess === "s") ||
             (userGuess === "s" && computerGuess === "p") || 

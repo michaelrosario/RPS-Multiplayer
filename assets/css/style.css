@@ -2,11 +2,88 @@ body, html {
 	background-color: #333;
 }
 
+.game { 
+	display: none; 
+}
+
 h1 { display: block; text-align: center;
 	color: #FFF;
 	margin: 40px auto 20px; 
 	font-size: 30px;
 	font-family: Georgia, Times, serif;
+}
+
+.player-start { 
+	color: #FFF;
+	display: block; 
+	text-align: center;
+	width: 100%;
+	padding: 30px;
+	font-size: 20px;
+}
+.player-start input { 
+	width: 90%;
+	margin: 10px auto;
+	font-size: 17px;
+	max-width: 400px;
+	padding: 10px;
+	border-radius: 3px;
+	border: 1px solid #FFF; 
+	color: #000;
+	text-align: center;
+	cursor: pointer;
+	
+}
+
+.player-start.error input {
+	border: 2px solid #FF0000;
+}
+
+
+.player-start .start {
+	font-size: 15px;
+	display: block;
+	max-width: 200px;
+	margin: 5px auto;
+	width: 90%;
+	color: #FFF;
+	border-radius: 3px;
+	border: 1px solid #FFF;
+	background: #333;
+	padding: 10px;
+	text-decoration: none;
+	outline: none;
+}
+.player-start .start:hover {
+	background: #888;
+}
+
+
+
+.player1,.player2 {
+	font-size: 20px; 
+	opacity: 0.5;
+	position: absolute;
+	padding: 10px;
+	border-radius: 4px;
+	color: white;
+}
+
+.player1 { 
+	bottom: 5px; 
+	left: 5px;
+	background: green;
+	border-top-right-radius: 100px;
+	border-bottom-left-radius: 10px;
+	padding-right: 50px;
+}
+.player2 {  
+	background: red;
+	padding-left: 50px;
+	top: 5px; right: 5px;
+	border-bottom-left-radius: 100px;
+	border-top-right-radius: 10px;
+	
 }
 
 #scissors:hover,
@@ -82,7 +159,7 @@ div {
 	position: relative;
 	border-radius: 10px;
 	overflow: hidden;
-	width: 90%; max-width: 600px; 
+	width: 90%; max-width: 1000px; 
 	background: #FFF;
 	margin: 10px auto;
 	padding: 0;
@@ -97,14 +174,22 @@ div {
 .results-animated .right.start  { margin-right: -1%; } 
 
 .status {
-	position: absolute; z-index: 9;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	display: block;
+	z-index: 9;
 	opacity: 0.1;
 	width: 100%;
 	text-align: center;
 	font-weight: bold;
 	font-style: italic;
-	margin: 60px auto;
+	vertical-align: middle;
 	font-size: 50px;
+}
+
+.status * { 
+	display: inline;
 }
 
 .status.ready {
@@ -112,10 +197,46 @@ div {
 	opacity: 1;
 }
 
-@media (max-width: 400px) {
-	.status { 
-		margin: 30px auto;
+.challenger {
+	width: 90%;
+	opacity: 0.4;
+	border: 1px dashed #CCC;
+	margin: 50px auto;
+	padding: 30px;
+	text-align: center;
+	border-radius: 10px;
+	max-width: 600px;
+	color: #FFF;
+	font-size: 20px;
+	overflow: hidden;
+	position: relative;
+}
+.challenger::after {
+		content: '';
+		opacity: 0.3;
+		position: absolute;
+		top: -50%;
+		right: -50%;
+		bottom: -50%;
+		left: -50%;
+		background: linear-gradient(to bottom, rgba(229, 172, 142, 0), rgba(255,255,255,0.5) 50%, rgba(229, 172, 142, 0));
+		transform: rotateZ(60deg) translate(-5em, 7.5em);
+	  }
+.challenger::after, 
+.challenger::after {
+		animation: sheen 3s infinite;
+}
+@keyframes sheen {
+	0% {
+		transform: rotateZ(60deg) translate(20em, 20em);
 	}
+	100% {
+		transform: rotateZ(60deg) translate(1em, -20em);
+	}
+}
+
+@media (max-width: 400px) {
+
 	#wins,
 	#losses,
 	#ties {
