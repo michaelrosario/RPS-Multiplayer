@@ -16,8 +16,7 @@ $(".player-start").on("submit",function(e){
   } else {
     $(".player1").text($(".player").val());
     $(".player-start").slideUp();
-    $("#directions-text").fadeIn();
-    $(".game").fadeIn();
+    $(".game").addClass("ready").fadeIn();
     ready = true;
   }
 
@@ -50,21 +49,18 @@ $(".player-start").on("submit",function(e){
 
     $(".button").on("click",function(){
 
-      runGame($(this).text());
+      runGame($(this).attr("data-option"));
       return false;
 
     });
 
     function runGame(input) {
-      // Determines which key was pressed.
+        
+        // Determines which key was pressed.
         var userGuess = input.toLowerCase();
 
         // Randomly chooses a choice from the options array. This is the Computer's guess.
         var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
-
-        // Reworked our code from last step to use "else if" instead of lots of if statements.
-
-        // This logic determines the outcome of the game (win/loss/tie), and increments the appropriate number
 
         if(userGuess === "r"){
           $("#rock").addClass("active");
@@ -80,19 +76,26 @@ $(".player-start").on("submit",function(e){
 
           ready = false;
 
-          $(".status").html(`Round ${round++}`)
-
-          $(".status").removeClass("ready");
+          $(".status")
+            .show()
+            .html(`Round ${round++}`)
+            .removeClass("ready")
+            .delay(500)
+            .fadeOut();
 
           $(".left").addClass("start")
-          .css({'background':`url(./assets/images/left-${userGuess}.png) center center no-repeat`,'background-size':'contain'})
-          .find('img')
-          .animate({'opacity':0},500);
+            .css({'background':`url(./assets/images/left-${userGuess}.png) center center no-repeat`,'background-size':'contain'})
+            .find('img');
 
           $(".right").addClass("start")
             .css({'background':`url(./assets/images/right-${computerGuess}.png) center center no-repeat`,'background-size':'contain'})
-            .find('img')
-            .animate({'opacity':0},500);
+            .find('img');
+
+          setTimeout(function(){
+
+              $(".right,.left").removeClass("start").find("img");
+
+          },1600);
 
           if ((userGuess === "r" && computerGuess === "s") ||
             (userGuess === "s" && computerGuess === "p") || 
@@ -100,43 +103,43 @@ $(".player-start").on("submit",function(e){
             
             setTimeout(function(){ 
               wins++;
-              $("#wins").addClass("active"); 
-              $("#wins").html(`<span>wins:</span> ${wins}`);
-            }, 500 );
-
+              $("#wins").addClass("active") 
+                  .html(`<span>wins:</span> ${wins}`);
+              $(".status").hide().html("You won!").addClass("win").fadeIn();
+            }, 1500 );
 
           } else if (userGuess === computerGuess) {
             
-            
             setTimeout(function(){ 
               ties++;
-               $("#ties").addClass("active");
-               $("#ties").html(`<span>ties:</span> ${ties}`);  
-             }, 500 );
+               $("#ties").addClass("active")
+                  .html(`<span>ties:</span> ${ties}`);
+               $(".status").hide().html("It's a Tie!").addClass("tie").fadeIn(); 
+             }, 1500 );
           
           } else {
           
             setTimeout(function(){ 
               losses++;
-              $("#losses").addClass("active");
-              $("#losses").html(`<span>losses:</span> ${losses}`);
-            }, 500 );
+              $("#losses").addClass("active")
+                .html(`<span>losses:</span> ${losses}`);
+              $(".status").hide().html("You lost!").addClass("loss").fadeIn();
+            }, 1500 );
           
           }
 
           setTimeout(function(){
 
-             $("#losses,#wins,#ties,#rock,#paper,#scissors").removeClass("active");
+            $("#losses,#wins,#ties,#rock,#paper,#scissors").removeClass("active");
 
-          },1000);
+         },2000);
 
           setTimeout(function(){
 
-              ready = true;
-              $(".status").html("READY").addClass("ready");
-              $(".right,.left").removeClass("start").find("img").animate({'opacity':1},0);
+            ready = true;
+            $(".status").html("READY").addClass("ready").removeClass("loss win tie").fadeIn();
 
-          },2000);
+          },2500);
 
           
           

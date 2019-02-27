@@ -33,8 +33,7 @@
   <div>
     
     <h1>Multiplayer Rock, Paper or Scissors</h1>
-    <p id="directions-text" style="display: none;">Press <span id="rock" class="button">r</span> , <span id="paper" class="button">p</span> or <span id="scissors" class="button">s</span> to start playing!</p>
-
+    
     <form class="player-start">
 
       <p>Please enter your name:</p>
@@ -44,7 +43,11 @@
     </form>
 
     <div class="game">
-      
+      <p id="directions-text">Press 
+          <span id="rock" class="button" data-option="r">r</span> , 
+          <span id="paper" class="button" data-option="p">p</span> or 
+          <span id="scissors" class="button" data-option="s">s</span> to start playing!</p>
+          
       <div class="results-animated">
         <div class="player1">Player 1</div>
         <div class="player2">Computer</div>
@@ -61,8 +64,8 @@
       
       <div class="results">
         <p id="wins"></p>
-        <p id="ties"></p>
         <p id="losses"></p>
+        <p id="ties"></p>
       </div>
 
       <div class="challenger">

@@ -27,7 +27,7 @@ h1 { display: block; text-align: center;
 	font-size: 27px;
 	max-width: 600px;
 	padding: 10px;
-	border-radius: 3px;
+	border-radius: 4px;
 	border: 1px solid #FFF; 
 	color: #000;
 	text-align: center;
@@ -100,13 +100,13 @@ h1 { display: block; text-align: center;
 #paper:active,
 #rock:active { border-color: yellow; color: yellow; }
 
-#directions-text { 
+.game #directions-text { 
 	display: block;
 	text-align: center;
 	color: #EDEDED;
 	padding: 0 0 20px 0;
 }
-#directions-text span { border: 1px solid #EEE; padding: 2px 8px; border-radius: 3px; }
+.game  #directions-text span { border: 1px solid #EEE; padding: 2px 8px; border-radius: 3px; }
 
 div {
 	font-family: Helvetica, Arial, sans-serif !important;
@@ -165,7 +165,7 @@ div {
 	padding: 0;
 }
 .clearfix { float: left; width: 100%; }
-.results-animated img { float: left; width: 100%; height: auto !important;  }
+.results-animated img { float: left; width: 100%; height: auto !important;  opacity: 0 !important; }
 .results-animated .left { width: 50%; display: inline-block; float: left; transition: all 1s linear; }
 .results-animated .right { width: 50%; display: inline-block; float: right; transition: all 1s linear; }
 .results-animated .left  { margin-left: -95%; }
@@ -184,7 +184,6 @@ div {
 	text-align: center;
 	font-weight: bold;
 	font-style: italic;
-	vertical-align: middle;
 	font-size: 50px;
 }
 
@@ -195,6 +194,15 @@ div {
 .status.ready {
 	color: #15fc03;
 	opacity: 1;
+}
+
+.status.win,
+.status.loss,
+.status.tie {
+	opacity: 1;
+	color: white;
+	-webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: #999;
 }
 
 .challenger {
@@ -235,6 +243,12 @@ div {
 	}
 }
 
+@media (max-width: 768px) {
+	.game #directions-text { display: none; }
+	.results-animated .left  { height: 250px; }
+	.results-animated .right  {  height: 250px; }
+}
+
 @media (max-width: 400px) {
 
 	#wins,
@@ -248,12 +262,6 @@ div {
 
 	.player1,
 	.player2 { font-size: 12px; }
-
-	.results-animated .left  { height: 250px; }
-	.results-animated .right  {  height: 250px; }
-	.results-animated .left img { opacity: 0 !important; }
-	.results-animated .right img  { opacity: 0 !important; }
-
 
 }
 
