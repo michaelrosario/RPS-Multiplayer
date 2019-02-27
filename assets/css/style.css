@@ -173,6 +173,35 @@ div {
 .results-animated .left.start  { margin-left: -1%; }
 .results-animated .right.start  { margin-right: -1%; } 
 
+.options { 
+	margin: 0 auto;
+	position: relative;
+	text-align: center;
+	width: 100%;
+	max-width: 700px;
+	z-index: 99;
+}
+
+.options .button {
+	transition: all 0.08s linear;
+	width: 13%;
+	display: inline-block;
+	margin: -75px 5px 20px;
+	overflow: hidden;
+	border-radius: 1000px;
+}
+.options .button:active,
+.options .button.active {
+	margin: -95px 5px 30px;
+}
+
+.options .button img {
+	display: inline-block;
+	width: 100%;
+	height: auto;
+	border-radius: 1000px;
+}
+
 .status {
 	position: absolute;
 	top: 50%;
@@ -244,12 +273,27 @@ div {
 }
 
 @media (max-width: 768px) {
+	.player1 { 
+		top: 5px; 
+		bottom: auto; 
+		border-top-right-radius: 0px;
+		border-top-left-radius: 10px;
+		border-bottom-right-radius: 100px;
+	}
 	.game #directions-text { display: none; }
 	.results-animated .left  { height: 250px; }
 	.results-animated .right  {  height: 250px; }
+
+	.options .button {
+		width: 15%;
+	}
 }
 
 @media (max-width: 400px) {
+
+	.options .button {
+		width: 20%;
+	}
 
 	#wins,
 	#losses,

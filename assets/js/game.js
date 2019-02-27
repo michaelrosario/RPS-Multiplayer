@@ -19,7 +19,6 @@ $(".player-start").on("submit",function(e){
     $(".game").addClass("ready").fadeIn();
     ready = true;
   }
-
 });
 
 // Creates an array that lists out all of the options (Rock, Paper, or Scissors).
@@ -49,7 +48,11 @@ $(".player-start").on("submit",function(e){
 
     $(".button").on("click",function(){
 
-      runGame($(this).attr("data-option"));
+      if(ready){
+        runGame($(this).attr("data-option"));
+      } else {
+
+      }
       return false;
 
     });
