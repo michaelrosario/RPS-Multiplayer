@@ -46,7 +46,7 @@ $(".player-start").on("submit",function(e){
         
     }
 
-    $(".button").on("click",function(){
+    $(".button").on("mouseup touchstart",function(){
 
       if(ready){
         runGame($(this).attr("data-option"));
