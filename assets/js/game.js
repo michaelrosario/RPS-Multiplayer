@@ -86,14 +86,14 @@ $(".player-start").on("submit",function(e){
             .delay(500)
             .fadeOut();
 
-          $(".left").addClass("start")
+          $(".left")
             .css({'background':`url(./assets/images/left-${userGuess}.png) center center no-repeat`,'background-size':'contain'})
-            .find('img');
+            .addClass("start");
 
-          $(".right").addClass("start")
+          $(".right")
             .css({'background':`url(./assets/images/right-${computerGuess}.png) center center no-repeat`,'background-size':'contain'})
-            .find('img');
-
+            .addClass("start");
+        
           setTimeout(function(){
 
               $(".right,.left").removeClass("start").find("img");

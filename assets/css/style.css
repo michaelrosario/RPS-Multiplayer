@@ -184,22 +184,35 @@ div {
 
 .options .button {
 	transition: all 0.08s linear;
-	width: 13%;
+	width: 20%;
+	padding: 0;
 	display: inline-block;
-	margin: -75px 5px 20px;
+	margin: -55px 0px 20px;
 	overflow: hidden;
-	border-radius: 1000px;
+	background: #FFF;
 }
 .options .button:active,
 .options .button.active {
-	margin: -95px 5px 30px;
+	margin: -95px 0px 30px;
 }
 
 .options .button img {
 	display: inline-block;
 	width: 100%;
+	max-width: 100px;
 	height: auto;
-	border-radius: 1000px;
+	border-radius: 4px;
+}
+
+.options #scissors {
+	text-align: left;
+	padding-left: 10px;
+	border-bottom-right-radius: 100px;
+}
+.options #rock {
+	padding-right: 10px;
+	text-align: right;
+	border-bottom-left-radius: 100px;
 }
 
 .status {
@@ -287,6 +300,22 @@ div {
 	.options .button {
 		width: 15%;
 	}
+
+	.options .button img {
+		width: 70px;
+	}
+
+	.options #scissors {
+		padding-right: 20px;
+		width: 30%;
+	}
+	.options #rock {
+		padding-left: 20px;
+		width: 30%;
+	}
+
+	.player1,
+	.player2 { font-size: 16px; }
 }
 
 @media (max-width: 400px) {
