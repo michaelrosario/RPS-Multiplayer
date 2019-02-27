@@ -1,39 +1,128 @@
-var ready = false;
+  // Creates an array that lists out all of the options (Rock, Paper, or Scissors).
+  var computerChoices = ["r", "p", "s"];
 
-$(".start").on("click",function(e){
-  e.preventDefault();
-  $(".player-start").submit();
-});
+  // Creating variables to hold the number of wins, losses, and ties. They start at 0.
+  var name = "Player 1";
+  var challenger = "Player 2";
+  var wins = 0;
+  var losses = 0;
+  var ties = 0;
+  var round = 1;
+  var ready = false;
+  var key = Math.round(new Date().getTime()/1000);
 
-$(".player-start input").on("focus",function(){
-  $(this).parent().removeClass("error")
-});
+// Initialize Firebase
+var config = {
+    apiKey: "AIzaSyAMq-zbxLo_tgM9l4APGh0ScK5AKr0Fxao",
+    authDomain: "rps-game-19d30.firebaseapp.com",
+    databaseURL: "https://rps-game-19d30.firebaseio.com",
+    projectId: "rps-game-19d30",
+    storageBucket: "rps-game-19d30.appspot.com",
+    messagingSenderId: "700549478537"
+};
+firebase.initializeApp(config);
 
-$(".player-start").on("submit",function(e){
-  e.preventDefault();
-  if( $(".player").val().length < 2 ){
-    $(this).addClass("error");
-  } else {
-    $(".player1").text($(".player").val());
-    $(".player-start").slideUp();
-    $(".game").addClass("ready").fadeIn();
-    ready = true;
-  }
-});
+var database = firebase.database();
 
-// Creates an array that lists out all of the options (Rock, Paper, or Scissors).
-    var computerChoices = ["r", "p", "s"];
+var connectionsRef = database.ref("/connections");
+var connectedRef = database.ref(".info/connected");
 
-    // Creating variables to hold the number of wins, losses, and ties. They start at 0.
-    var wins = 0;
-    var losses = 0;
-    var ties = 0;
-    var round = 1;
-   
+  // When the client's connection state changes...
+  connectedRef.on("value", function(snap) {
+    // If they are connected..
+    if (snap.val()) {
+      // Add user to the connections list.
+      var con = connectionsRef.push(key);
+      // Remove user from the connection list when they disconnect.
+      database.ref("/players/"+key).onDisconnect().remove();
+      con.onDisconnect().remove();
+    }
+  });
+
+  // When first loaded or when the connections list changes...
+  database.ref('players').on("value", function(snapshot) {
+    var currentlyPlaying = 0;
+    $(".challenger").empty();
+    snapshot.forEach(function(userSnapshot) {
+      var currentKey = parseInt(userSnapshot.key);
+      var player = userSnapshot.val();
+      if(player.currentlyPlaying){
+        currentlyPlaying++;
+      }
+      if(currentKey !== key && !player.currentlyPlaying){
+        $(".challenger").append(`<div class="playersList Item${currentKey}">${player.name} is now available! <a href="#" data='${currentKey}'>Play Now</a></div>`);
+      } else if(currentKey !== key && player.currentlyPlaying) {
+        $(".challenger").append(`<div class="playersList Item${currentKey}">${player.name} is currently playing...`);
+      }
+    });
+
+    if ((snapshot.numChildren() - currentlyPlaying) < 2) {
+      $(".challenger").html(`Waiting for Challengers...`);
+    }
+    
+  });
+
+  // Check if data removed
+  database.ref('players').on('child_removed', function(data) {
+    console.log(data.val().name+" left the game...");
+    $(".Item"+data.key).remove();
+  });
+
+  // Check if data changed
+  database.ref('players').on('child_changed', function(data) {
+    console.log(data.val().name+" played the game...");
+  });
+
+  $(".start").on("click",function(e){
+    e.preventDefault();
+    $(".player-start").submit();
+  });
+
+  $(".player-start input").on("focus",function(){
+    $(this).parent().removeClass("error")
+  });
+
+  $(".player-start").on("submit",function(e){
+    e.preventDefault();
+    if( $(".player").val().length < 2 ){
+      
+      $(this).addClass("error");
+    
+    } else {
+
+      name = $(".player").val();
+      
+      $(".player1").text(name);
+      $(".player-start").slideUp();
+      $(".game").addClass("ready").fadeIn();
+      ready = true;
+
+      database.ref("/players/"+key).set({
+        name: name
+      });
+      
+    }
+  });
+
+    database.ref("/players/"+key).on("value", function(snapshot) {
+
+      if(snapshot.child("name").exists()){
+        // Set the local variables for highBidder equal to the stored values in firebase.
+        wins = parseInt(snapshot.val().wins) || 0;
+        ties = parseInt(snapshot.val().ties) || 0;
+        losses = parseInt(snapshot.val().losses) || 0;
+    
+        $("#wins").html(`<span>wins:</span> ${wins}`);
+        $("#losses").html(`<span>losses:</span> ${losses}`);
+        $("#ties").html(`<span>ties:</span> ${ties}`);
+      }
+
+    });
+
     $("#wins").html(`<span>wins:</span> ${wins}`);
     $("#losses").html(`<span>losses:</span> ${losses}`);
     $("#ties").html(`<span>ties:</span> ${ties}`);
-
+      
     $(".status").addClass("ready");
 
     // This function is run whenever the user presses a key.
@@ -103,31 +192,37 @@ $(".player-start").on("submit",function(e){
           if ((userGuess === "r" && computerGuess === "s") ||
             (userGuess === "s" && computerGuess === "p") || 
             (userGuess === "p" && computerGuess === "r")) {
-            
+            wins++;
             setTimeout(function(){ 
-              wins++;
-              $("#wins").addClass("active") 
-                  .html(`<span>wins:</span> ${wins}`);
+              $("#wins").addClass("active");
               $(".status").hide().html("You won!").addClass("win").fadeIn();
             }, 1500 );
+            
+            database.ref("/players/"+key).update({
+              wins : wins
+            });
+
 
           } else if (userGuess === computerGuess) {
-            
+            ties++;
             setTimeout(function(){ 
-              ties++;
-               $("#ties").addClass("active")
-                  .html(`<span>ties:</span> ${ties}`);
+               $("#ties").addClass("active");
                $(".status").hide().html("It's a Tie!").addClass("tie").fadeIn(); 
              }, 1500 );
+            database.ref("/players/"+key).update({
+              ties : ties
+            });
           
           } else {
-          
+            losses++;
             setTimeout(function(){ 
-              losses++;
-              $("#losses").addClass("active")
-                .html(`<span>losses:</span> ${losses}`);
+              $("#losses").addClass("active");
               $(".status").hide().html("You lost!").addClass("loss").fadeIn();
             }, 1500 );
+
+            database.ref("/players/"+key).update({
+              losses : losses
+            });
           
           }
 
@@ -145,7 +240,7 @@ $(".player-start").on("submit",function(e){
           },2500);
 
           
-          
+  
       
-        };
+        }
     }

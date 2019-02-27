@@ -295,6 +295,31 @@ div {
 .challenger::after {
 		animation: sheen 3s infinite;
 }
+
+.challenger a { 
+	padding: 10px 30px; 
+	border: 1px solid #999; 
+	color: #999; 
+	margin: 0 0 0 15px;
+	text-decoration: none; border-radius: 5px; 
+}
+
+.challenger a:hover { 
+	border: 1px solid #FFF; 
+	color: #FFF; 
+}
+
+.playersList { 
+	display: block; 
+	border-radius: 5px;
+	width: 100%; 
+	background: #666;
+	margin: 5px 0 5px 0;
+	padding: 20px 10px 20px 20px;
+	text-align: left;
+}
+.playersList a { float: right; margin-top: -12px; }
+
 @keyframes sheen {
 	0% {
 		transform: rotateZ(60deg) translate(20em, 20em);
