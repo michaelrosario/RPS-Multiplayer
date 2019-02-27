@@ -23,9 +23,9 @@ h1 { display: block; text-align: center;
 }
 .player-start input { 
 	width: 90%;
-	margin: 10px auto;
-	font-size: 17px;
-	max-width: 400px;
+	margin: 20px auto;
+	font-size: 27px;
+	max-width: 600px;
 	padding: 10px;
 	border-radius: 3px;
 	border: 1px solid #FFF; 
@@ -245,6 +245,15 @@ div {
 		width: 29%;
 		margin: 0 3px 10px 0;
 	}
+
+	.player1,
+	.player2 { font-size: 12px; }
+
+	.results-animated .left  { height: 250px; }
+	.results-animated .right  {  height: 250px; }
+	.results-animated .left img { opacity: 0 !important; }
+	.results-animated .right img  { opacity: 0 !important; }
+
 
 }
 
