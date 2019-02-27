@@ -64,9 +64,12 @@ var connectedRef = database.ref(".info/connected");
 
         // set specifics to player
         $(".player2").text(`${player.name}`);
+        if(!challenger){
+          round = 1;
+        }
         challenger = player.name;
         challengerId = currentKey;
-        round = 1;
+        
 
         database.ref("/players/"+key).update({
           currentlyPlaying : true
@@ -140,25 +143,23 @@ var connectedRef = database.ref(".info/connected");
     $(".Item"+data.key).remove();
   });
 
-  var userChoice = "";
-  var challengerChoice = "";
+  var userChoice = false;
+  var challengerChoice = false;
   
   // Check if data changed
   database.ref('players').on('child_changed', function(data) {
     console.log(data.val().name+" played the game...");
-    if(challenger && data.key == key){
+    if(!userChoice && challenger && data.key == key){
       userChoice = data.val().currentChoice;
       $(".status").html(`Waiting for ${challenger}...`);
 
     }
-    if(challenger && data.key == challengerId){
+    if(!challengerChoice && challenger && data.key == challengerId){
       challengerChoice = data.val().currentChoice;
       $(".status").html(`Waiting for ${name}...`);
     }
-    if(challenger && userChoice && challengerChoice){
-      $(".status").html(`Round ${round++}`);
+    if(ready && challenger && userChoice && challengerChoice){
       runMultiplayerGame(userChoice,challengerChoice);
-
     }
   });
 
@@ -265,10 +266,83 @@ var connectedRef = database.ref(".info/connected");
     function runMultiplayerGame(userInput,challengerInput){
       console.log("userInput",userInput);
       console.log("challengerInput",challengerInput);
-      if(ready){
-        ready = false;
-      }
+      
+      if (((userInput === "r") || (userInput === "p") || (userInput === "s")) && ready) {
 
+        ready = false;
+
+        $(".status")
+          .show()
+          .html(`Round ${round++}`)
+          .removeClass("ready")
+          .delay(500)
+          .fadeOut();
+
+        $(".left")
+          .css({'background':`url(./assets/images/left-${userInput}.png) center center no-repeat`,'background-size':'contain'})
+          .addClass("start");
+
+        $(".right")
+          .css({'background':`url(./assets/images/right-${challengerInput}.png) center center no-repeat`,'background-size':'contain'})
+          .addClass("start");
+      
+        setTimeout(function(){
+
+            $(".right,.left").removeClass("start").find("img");
+
+        },1600);
+      }
+      if ((userInput === "r" && challengerInput === "s") ||
+            (userInput === "s" && challengerInput === "p") || 
+            (userInput === "p" && challengerInput === "r")) {
+            wins++;
+            setTimeout(function(){ 
+              $("#wins").addClass("active");
+              $(".status").hide().html("You won!").addClass("win").fadeIn();
+            }, 1500 );
+            
+            database.ref("/players/"+key).update({
+              wins : wins
+            });
+
+
+          } else if (userInput === challengerInput) {
+            ties++;
+            setTimeout(function(){ 
+               $("#ties").addClass("active");
+               $(".status").hide().html("It's a Tie!").addClass("tie").fadeIn(); 
+             }, 1500 );
+            database.ref("/players/"+key).update({
+              ties : ties
+            });
+          
+          } else {
+            losses++;
+            setTimeout(function(){ 
+              $("#losses").addClass("active");
+              $(".status").hide().html("You lost!").addClass("loss").fadeIn();
+            }, 1500 );
+
+            database.ref("/players/"+key).update({
+              losses : losses
+            });
+          
+          }
+
+          setTimeout(function(){
+
+            $("#losses,#wins,#ties,#rock,#paper,#scissors").removeClass("active");
+
+         },2000);
+
+          setTimeout(function(){
+
+            ready = true;
+            userChoice = "";
+            challengerChoice = "";
+            $(".status").html("READY").addClass("ready").removeClass("loss win tie").fadeIn();
+
+          },2500);
     }
 
     function runGame(input) {
