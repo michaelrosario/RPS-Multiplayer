@@ -165,13 +165,25 @@ div {
 	padding: 0;
 }
 .clearfix { float: left; width: 100%; }
-.results-animated img { float: left; width: 100%; height: auto !important;  opacity: 0 !important; }
-.results-animated .left { width: 50%; display: inline-block; float: left; transition: all 1s linear; }
-.results-animated .right { width: 50%; display: inline-block; float: right; transition: all 1s linear; }
-.results-animated .left  { margin-left: -95%; }
-.results-animated .right { margin-right: -95%; } 
-.results-animated .left.start  { margin-left: -1%; }
-.results-animated .right.start  { margin-right: -1%; } 
+.results-animated img { 
+	float: left; 
+	width: 100%; 
+	height: auto !important;  
+	opacity: 0 !important; 
+}
+.results-animated .left,
+.results-animated .right {
+	width: 50%; 
+	display: inline-block;
+	transition: all 1s linear;
+	background-position: center center;
+} 
+.results-animated .left {  float: left;  }
+.results-animated .right { float: right; }
+.results-animated .left  { margin-left: -100%; }
+.results-animated .right { margin-right: -100%; } 
+.results-animated .left.start  { margin-left: 0%; }
+.results-animated .right.start  { margin-right: 0%; } 
 
 .options { 
 	margin: 0 auto;
@@ -301,6 +313,7 @@ div {
 		border-bottom-right-radius: 100px;
 	}
 	.game #directions-text { display: none; }
+	.results-animated img { height: 250px !important; }
 	.results-animated .left  { height: 250px; }
 	.results-animated .right  {  height: 250px; }
 
