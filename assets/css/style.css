@@ -191,17 +191,24 @@ div {
 	overflow: hidden;
 	background: #FFF;
 }
-.options .button:active,
-.options .button.active {
-	margin: -95px 0px 30px;
-}
 
 .options .button img {
+	transition: all 0.08s linear;
 	display: inline-block;
 	width: 100%;
 	max-width: 100px;
 	height: auto;
+	position: relative;
 	border-radius: 4px;
+	margin-bottom: -15px;
+}
+.options .button:active,
+.options .button.active {
+	margin-top: -68px;
+}
+.options .button:active img,
+.options .button.active img {
+	margin-bottom: -3px;
 }
 
 .options #scissors {
