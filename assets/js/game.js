@@ -70,7 +70,6 @@ var connectedRef = database.ref(".info/connected");
         challenger = player.name;
         challengerId = currentKey;
         
-
         database.ref("/players/"+key).update({
           currentlyPlaying : true
         });
@@ -268,7 +267,8 @@ var connectedRef = database.ref(".info/connected");
       console.log("challengerInput",challengerInput);
       
       if (((userInput === "r") || (userInput === "p") || (userInput === "s")) && ready) {
-
+        userChoice = "";
+        challengerChoice = "";
         ready = false;
 
         $(".status")
@@ -338,8 +338,6 @@ var connectedRef = database.ref(".info/connected");
           setTimeout(function(){
 
             ready = true;
-            userChoice = "";
-            challengerChoice = "";
             $(".status").html("READY").addClass("ready").removeClass("loss win tie").fadeIn();
 
           },2500);
