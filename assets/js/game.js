@@ -141,6 +141,13 @@ var connectedRef = database.ref(".info/connected");
     console.log(data.val().name+" left the game...");
     if(data.key == challengerId){
       $(".Item"+data.key).remove();
+      
+      // Reset player
+      database.ref("/players/"+key).update({
+        status : '',
+        currentlyPlaying: false
+      });
+
       $(".status").show().html(`<p>${challenger} left the game! <br>${wins > losses ? 'You win!' : 'You lost!'}</p>`);
       $(".player2").text("Computer");
       round = 1;
