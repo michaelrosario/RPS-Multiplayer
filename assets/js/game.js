@@ -139,26 +139,49 @@ var connectedRef = database.ref(".info/connected");
   // Check if data removed
   database.ref('players').on('child_removed', function(data) {
     console.log(data.val().name+" left the game...");
-    $(".Item"+data.key).remove();
+    if(data.key == challengerId){
+      $(".Item"+data.key).remove();
+      $(".status").show().html(`${challenger} left the game! <br>${wins > losses ? 'You win!' : 'You lost!'}`);
+      $(".player2").text("Computer");
+      round = 1;
+      wins = 0;
+      losses = 0;
+      ties = 0;
+      $("#wins").html(`<span>wins:</span> ${wins}`);
+      $("#losses").html(`<span>losses:</span> ${losses}`);
+      $("#ties").html(`<span>ties:</span> ${ties}`);
+      challenger = false;
+      challengerId = "";
+    }
   });
 
-  var userChoice = false;
-  var challengerChoice = false;
+  var userChoice = "";
+  var challengerChoice = "";
+  var userTime = 0;
+  var challengerTime = 0;
   
   // Check if data changed
   database.ref('players').on('child_changed', function(data) {
-    console.log(data.val().name+" played the game...");
+    console.log(data.val().name+" played the game... "+data.val().currentChoice);
     if(!userChoice && challenger && data.key == key){
-      userChoice = data.val().currentChoice;
-      $(".status").html(`Waiting for ${challenger}...`);
-
+      if(userTime != data.val().timesStamp){
+        userChoice = data.val().currentChoice;
+        userTime = data.val().timesStamp;
+        console.log(data.val().name+" played the game... "+data.val().currentChoice);
+        $(".status").hide().html(`Waiting for ${challenger}...`).fadeIn();
+      }
     }
     if(!challengerChoice && challenger && data.key == challengerId){
-      challengerChoice = data.val().currentChoice;
-      $(".status").html(`Waiting for ${name}...`);
+      if(challengerTime != data.val().timesStamp){
+        console.log(data.val().name+" played the game... "+data.val().currentChoice);
+        challengerTime = data.val().timesStamp;
+        challengerChoice = data.val().currentChoice;
+        $(".status").hide().html(`Waiting for ${name}...`).fadeIn();
+      }
     }
     if(ready && challenger && userChoice && challengerChoice){
-      runMultiplayerGame(userChoice,challengerChoice);
+      $(".status").html("");
+      runGame(userChoice,challengerChoice);
     }
   });
 
@@ -216,25 +239,38 @@ var connectedRef = database.ref(".info/connected");
       
     $(".status").addClass("ready");
 
+    var currentUserReady = true;
+
     // This function is run whenever the user presses a key.
     document.onkeyup = function(event) {
       if(event.target.id === 'player-input'){
         return; // exclude on key up on input
       }  
 
-      if(ready && !challenger){
-        runGame(event.key);
-      } else if(ready){
-        updateMultiplayerGame(event.key);
-      }
+      var userInput = event.key.toLowerCase();
+
+      if ((userInput === "r") || (userInput === "p") || (userInput === "s") && currentUserReady) {
         
+        if(ready && !challenger){
+          currentUserReady = false;
+          var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+          runGame(event.key,computerGuess);
+        } else if(ready){
+          currentUserReady = false;
+          updateMultiplayerGame(event.key);
+        }
+      
+      }  
     }
 
     $(".button").on("mouseup touchstart",function(){
       var choice = $(this).attr("data-option");
-      if(ready && !challenger){
-        runGame(choice);
-      } else if(ready){
+      if(ready && !challenger && currentUserReady){
+        currentUserReady = false;
+        var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+        runGame(choice,computerGuess);
+      } else if(ready && currentUserReady){
+        currentUserReady = false;
         updateMultiplayerGame(choice);
       }
       return false;
@@ -244,33 +280,38 @@ var connectedRef = database.ref(".info/connected");
     function updateMultiplayerGame(input){
 
        // Determines which key was pressed.
-       var userGuess = input.toLowerCase();
-       
-       if(userGuess === "r"){
-          $("#rock").addClass("active");
-        }
-        if(userGuess === "p"){
-          $("#paper").addClass("active");
-        }
-        if(userGuess === "s"){
-          $("#scissors").addClass("active");
-        }
-
+       var saveChoice = input.toLowerCase();
+       var timesStamp = Math.round(new Date().getTime()/1000);
         database.ref("/players/"+key).update({
-          currentChoice: userGuess
+          currentChoice: saveChoice,
+          timesStamp: timesStamp
         });
 
     }
 
-    function runMultiplayerGame(userInput,challengerInput){
-      console.log("userInput",userInput);
-      console.log("challengerInput",challengerInput);
+    function runGame(userInput,challengerInput){
+      
+      
+      console.log("userInput",typeof userInput);
+      console.log("challengerInput",typeof challengerInput);
       
       if (((userInput === "r") || (userInput === "p") || (userInput === "s")) && ready) {
-        userChoice = "";
-        challengerChoice = "";
+        
         ready = false;
 
+        if(userInput === "r"){
+          $("#rock").addClass("active");
+        }
+        if(userInput === "p"){
+          $("#paper").addClass("active");
+        }
+        if(userInput === "s"){
+          $("#scissors").addClass("active");
+        }
+
+        userChoice = "";
+        challengerChoice = "";
+        
         $(".status")
           .show()
           .html(`Round ${round++}`)
@@ -291,7 +332,7 @@ var connectedRef = database.ref(".info/connected");
             $(".right,.left").removeClass("start").find("img");
 
         },1600);
-      }
+
       if ((userInput === "r" && challengerInput === "s") ||
             (userInput === "s" && challengerInput === "p") || 
             (userInput === "p" && challengerInput === "r")) {
@@ -304,7 +345,6 @@ var connectedRef = database.ref(".info/connected");
             database.ref("/players/"+key).update({
               wins : wins
             });
-
 
           } else if (userInput === challengerInput) {
             ties++;
@@ -336,108 +376,10 @@ var connectedRef = database.ref(".info/connected");
          },2000);
 
           setTimeout(function(){
-
+            currentUserReady = true;
             ready = true;
             $(".status").html("READY").addClass("ready").removeClass("loss win tie").fadeIn();
 
           },2500);
-    }
-
-    function runGame(input) {
-
-        // Determines which key was pressed.
-        var userGuess = input.toLowerCase();
-
-        // Randomly chooses a choice from the options array. This is the Computer's guess.
-        var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
-
-        if(userGuess === "r"){
-          $("#rock").addClass("active");
-        }
-        if(userGuess === "p"){
-          $("#paper").addClass("active");
-        }
-        if(userGuess === "s"){
-          $("#scissors").addClass("active");
-        }
-
-        if (((userGuess === "r") || (userGuess === "p") || (userGuess === "s")) && ready) {
-
-          ready = false;
-
-          $(".status")
-            .show()
-            .html(`Round ${round++}`)
-            .removeClass("ready")
-            .delay(500)
-            .fadeOut();
-
-          $(".left")
-            .css({'background':`url(./assets/images/left-${userGuess}.png) center center no-repeat`,'background-size':'contain'})
-            .addClass("start");
-
-          $(".right")
-            .css({'background':`url(./assets/images/right-${computerGuess}.png) center center no-repeat`,'background-size':'contain'})
-            .addClass("start");
-        
-          setTimeout(function(){
-
-              $(".right,.left").removeClass("start").find("img");
-
-          },1600);
-
-          if ((userGuess === "r" && computerGuess === "s") ||
-            (userGuess === "s" && computerGuess === "p") || 
-            (userGuess === "p" && computerGuess === "r")) {
-            wins++;
-            setTimeout(function(){ 
-              $("#wins").addClass("active");
-              $(".status").hide().html("You won!").addClass("win").fadeIn();
-            }, 1500 );
-            
-            database.ref("/players/"+key).update({
-              wins : wins
-            });
-
-
-          } else if (userGuess === computerGuess) {
-            ties++;
-            setTimeout(function(){ 
-               $("#ties").addClass("active");
-               $(".status").hide().html("It's a Tie!").addClass("tie").fadeIn(); 
-             }, 1500 );
-            database.ref("/players/"+key).update({
-              ties : ties
-            });
-          
-          } else {
-            losses++;
-            setTimeout(function(){ 
-              $("#losses").addClass("active");
-              $(".status").hide().html("You lost!").addClass("loss").fadeIn();
-            }, 1500 );
-
-            database.ref("/players/"+key).update({
-              losses : losses
-            });
-          
-          }
-
-          setTimeout(function(){
-
-            $("#losses,#wins,#ties,#rock,#paper,#scissors").removeClass("active");
-
-         },2000);
-
-          setTimeout(function(){
-
-            ready = true;
-            $(".status").html("READY").addClass("ready").removeClass("loss win tie").fadeIn();
-
-          },2500);
-
-          
-  
-      
         }
     }
