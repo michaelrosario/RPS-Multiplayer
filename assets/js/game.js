@@ -138,7 +138,7 @@ var connectedRef = database.ref(".info/connected");
 
   // Check if data removed
   database.ref('players').on('child_removed', function(data) {
-    console.log(data.val().name+" left the game...");
+
     if(data.key == challengerId){
       $(".Item"+data.key).remove();
       
@@ -294,10 +294,6 @@ var connectedRef = database.ref(".info/connected");
     }
 
     function runGame(userInput,challengerInput){
-      
-      
-      console.log("userInput",typeof userInput);
-      console.log("challengerInput",typeof challengerInput);
       
       if (((userInput === "r") || (userInput === "p") || (userInput === "s")) && ready) {
         
