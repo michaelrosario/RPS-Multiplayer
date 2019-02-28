@@ -159,6 +159,10 @@ var connectedRef = database.ref(".info/connected");
       $("#ties").html(`<span>ties:</span> ${ties}`);
       challenger = false;
       challengerId = "";
+      if($(".challenger").find('div').length === 0){
+        $(".challenger").html(`<p>Waiting for Challengers...</p>`);
+      }
+
     }
   });
 
