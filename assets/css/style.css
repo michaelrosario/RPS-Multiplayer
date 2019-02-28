@@ -252,7 +252,7 @@ div {
 	display: inline;
 }
 
-.status P { font-size: 30px; }
+.status P { font-size: 30px; line-height: 1.2em; }
 
 .status.ready {
 	color: #15fc03;
