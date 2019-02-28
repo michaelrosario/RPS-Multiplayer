@@ -252,6 +252,8 @@ div {
 	display: inline;
 }
 
+.status P { font-size: 30px; }
+
 .status.ready {
 	color: #15fc03;
 	opacity: 1;

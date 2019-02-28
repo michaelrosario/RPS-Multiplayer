@@ -141,7 +141,7 @@ var connectedRef = database.ref(".info/connected");
     console.log(data.val().name+" left the game...");
     if(data.key == challengerId){
       $(".Item"+data.key).remove();
-      $(".status").show().html(`${challenger} left the game! <br>${wins > losses ? 'You win!' : 'You lost!'}`);
+      $(".status").show().html(`<p>${challenger} left the game! <br>${wins > losses ? 'You win!' : 'You lost!'}</p>`);
       $(".player2").text("Computer");
       round = 1;
       wins = 0;
@@ -162,21 +162,18 @@ var connectedRef = database.ref(".info/connected");
   
   // Check if data changed
   database.ref('players').on('child_changed', function(data) {
-    console.log(data.val().name+" played the game... "+data.val().currentChoice);
     if(!userChoice && challenger && data.key == key){
       if(userTime != data.val().timesStamp){
         userChoice = data.val().currentChoice;
         userTime = data.val().timesStamp;
-        console.log(data.val().name+" played the game... "+data.val().currentChoice);
-        $(".status").hide().html(`Waiting for ${challenger}...`).fadeIn();
+        $(".status").removeClass("ready").hide().html(`<p>Waiting for ${challenger}...</p>`).fadeIn();
       }
     }
     if(!challengerChoice && challenger && data.key == challengerId){
       if(challengerTime != data.val().timesStamp){
-        console.log(data.val().name+" played the game... "+data.val().currentChoice);
         challengerTime = data.val().timesStamp;
         challengerChoice = data.val().currentChoice;
-        $(".status").hide().html(`Waiting for ${name}...`).fadeIn();
+        $(".status").removeClass("ready").hide().html(`<p>Waiting for ${name}...</p>`).fadeIn();
       }
     }
     if(ready && challenger && userChoice && challengerChoice){
