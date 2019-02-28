@@ -313,9 +313,10 @@ var connectedRef = database.ref(".info/connected");
         challengerChoice = "";
         
         $(".status")
+          .hide()
+          .removeClass("ready")
           .show()
           .html(`Round ${round++}`)
-          .removeClass("ready")
           .delay(500)
           .fadeOut();
 
@@ -376,7 +377,8 @@ var connectedRef = database.ref(".info/connected");
          },2000);
 
           setTimeout(function(){
-            currentUserReady = true;
+            
+            currentUserReady = true;  
             ready = true;
             $(".status").html("READY").addClass("ready").removeClass("loss win tie").fadeIn();
 
