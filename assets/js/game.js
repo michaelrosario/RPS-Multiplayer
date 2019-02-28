@@ -86,7 +86,7 @@ var connectedRef = database.ref(".info/connected");
         } else if(currentKey !== key && player.currentlyPlaying) {
           $(".challenger").append(`<div class="playersList Item${currentKey}">${player.name} is currently playing...`);
         } else if((snapshot.numChildren() - currentlyPlaying) < 2 &&  $(".challenger").find("div").length === 0) {
-            $(".challenger").html(`Waiting for Challengers...`);
+            $(".challenger").html(`<p>Waiting for Challengers...</p>`);
         }
       }
 

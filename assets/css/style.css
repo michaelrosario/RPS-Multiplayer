@@ -282,6 +282,9 @@ div {
 	overflow: hidden;
 	position: relative;
 }
+
+.challenger p { padding: 10px; display: block; text-align: center; }
+
 .challenger::after {
 		content: '';
 		opacity: 0.3;
