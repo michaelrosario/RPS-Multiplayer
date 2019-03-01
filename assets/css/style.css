@@ -345,7 +345,107 @@ div {
 	}
 }
 
+#messaging {
+	display: block; 
+	margin: 30px auto 0;
+	width: 90%; 
+	max-width: 600px;
+	border-radius: 0px;
+	display: none;
+}
+
+#messaging H5 { 
+	color: #AAA;
+	margin: 0 0 10px 0;
+}
+
+#messaging .messages {
+	padding: 10px;
+	border: 1px solid #666;
+	background: #444;
+	margin: 0 0 10px;
+	border-radius: 3px;
+	overflow-y: scroll;
+	min-height: 60px;
+	max-height: 150px;
+}
+#messaging #message-input {
+	padding: 10px;
+	border-radius: 3px;
+	width: 100%;
+	font-size: 16px;
+	color: #FFF;
+	background: #555;
+	border: 1px solid #666;
+	outline: none;
+}
+#messaging form {
+	display: block;
+	position: relative;
+}
+
+#messaging #message-input:focus {
+	border: 1px solid #999;
+	background: #777;
+}
+#messaging #chat.error #message-input {
+	border: solid 1px #ff0000;
+}
+
+#messaging .message-send {
+	padding: 7px 10px;
+	background: #999;
+	color: #bbb;
+	border-radius: 4px;
+	position: absolute;
+	right: 8px;
+	top: 7px;
+	text-transform: uppercase;
+	text-decoration: none;
+	font-size: 12px;
+}
+#messaging .message-send:hover {
+	color: #999;
+	background: #BBB;
+}
+
+#messaging .message { 
+	font-weight: 100;
+	float: left; 
+	font-size: 11px;
+	color: #999;
+	clear: both;
+	width: 100%;
+	margin: 0;
+	padding: 10px 0 0 0;
+}
+#messaging .message span {
+	font-weight: 300;
+	display: inline-block;
+	clear: both;
+	padding: 6px 10px 3px;
+	margin: 5px 0px 5px;
+	background: #545454;
+	border-radius: 100px;
+	font-size: 14px;
+}
+#messaging .message.player1-message {
+	text-align: right;
+}
+#messaging .message.player1-message span {
+	background: #444;
+	border: 1px solid #5f5f5f;
+	display: inline-block;
+	text-align: right;
+	right: 0;
+}
+
+
+
+
+
 @media (max-width: 768px) {
+
 	.player1 { 
 		top: 5px; 
 		bottom: auto; 
@@ -388,6 +488,8 @@ div {
 }
 
 @media (max-width: 400px) {
+
+	h1 { font-size: 25px; }
 
 	.options .button {
 		width: 20%;

@@ -18,7 +18,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'UA-134646521-1');
     </script>
 
@@ -33,7 +32,7 @@
     <form class="player-start">
 
       <p>Please enter your name:</p>
-      <input id="player-input" class="player" type="text" value='' placeholder="Your name">
+      <input id="player-input" class="player" type="text" value='' placeholder="Your name" maxlength="10">
       <button class="start">Start</button>
 
     </form>
@@ -78,10 +77,20 @@
         <p id="ties"></p>
       </div>
 
+      <div id="messaging">
+        <h5>Online Chat:</h5>
+        <div class="messages">
+        </div>
+        <form id="chat">
+          <input type="text" id="message-input" name="message-input" value="" placeholder="Send a message"> 
+          <a href="#" class="message-send">Send</a>
+        </form>
+      </div>
+
       <div class="challenger">
         Waiting for Challenger
       </div>
-      </div>
+    </div>
   </div>
   <!-- jQuery Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

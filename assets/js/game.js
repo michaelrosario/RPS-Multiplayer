@@ -35,9 +35,12 @@ var connectedRef = database.ref(".info/connected");
     if (snap.val()) {
       // Add user to the connections list.
       var con = connectionsRef.push(key);
+      
       // Remove user from the connection list when they disconnect.
+      database.ref("/messages/"+key).onDisconnect().remove();
       database.ref("/players/"+key).onDisconnect().remove();
       con.onDisconnect().remove();
+
     }
   });
 
@@ -56,26 +59,35 @@ var connectedRef = database.ref(".info/connected");
 
       // currentKey != key        : Check if it's not you
       // player.status == key     : Check if the player wants to play with you
-      // status == currentKey  : Check if you approved to play with player
+      // status == currentKey     : Check if you approved to play with player
 
       if(currentKey !== key && player.status == key && status == currentKey){
         
         $(".challenger").html(`<div class="playerChallenge Item${currentKey}">You are now playing with ${player.name}.</div>`);
-
-        // set specifics to player
-        $(".player2").text(`${player.name}`);
-        if(!challenger){
-          round = 1;
-        }
-        challenger = player.name;
-        challengerId = currentKey;
         
-        database.ref("/players/"+key).update({
-          currentlyPlaying : true
-        });
-        database.ref("/players/"+currentKey).update({
-          currentlyPlaying : true
-        });
+        if(!challenger){
+
+          challenger = player.name;
+          challengerId = currentKey;
+          round = 1;   
+
+          // set specifics to player
+          $(".player2").text(challenger);
+          
+          // Update player to currently playing
+          database.ref("/players/"+key).update({
+            currentlyPlaying : true
+          });
+
+          // Update challenger to currently playing
+          database.ref("/players/"+currentKey).update({
+            currentlyPlaying : true
+          });
+
+          $("#messaging .messages").empty();
+          $("#messaging").slideDown();
+
+        }
 
       } else if(!challenger){ 
 
@@ -131,7 +143,8 @@ var connectedRef = database.ref(".info/connected");
     round = 1;
     
     $(".player2").text(challenger);
-
+    $("#messaging .messages").empty();
+    $("#messaging").slideDown();
     $(".Item"+challengerId).html(`You are now playing with <strong>${challengerName}</strong>.`);
 
   });
@@ -139,7 +152,10 @@ var connectedRef = database.ref(".info/connected");
   // Check if data removed
   database.ref('players').on('child_removed', function(data) {
 
+    // check if the player that left is the challenger
     if(data.key == challengerId){
+      
+      // Remove the indicator of who you are playing against
       $(".Item"+data.key).remove();
       
       // Reset player
@@ -184,7 +200,7 @@ var connectedRef = database.ref(".info/connected");
       if(challengerTime != data.val().timesStamp){
         challengerTime = data.val().timesStamp;
         challengerChoice = data.val().currentChoice;
-        $(".status").removeClass("ready").hide().html(`<p>Waiting for ${name}...</p>`).fadeIn();
+        $(".status").removeClass("ready").hide().html(`<p>It's your turn, ${name}...</p>`).fadeIn();
       }
     }
     if(ready && challenger && userChoice && challengerChoice){
@@ -200,8 +216,8 @@ var connectedRef = database.ref(".info/connected");
 
   $(".player-start input").on("focus",function(){
     $(this).parent().removeClass("error")
-  });
-
+  }).bind('keypress', alphaOnly);
+ 
   $(".player-start").on("submit",function(e){
     e.preventDefault();
     if( $(".player").val().length < 2 ){
@@ -220,6 +236,11 @@ var connectedRef = database.ref(".info/connected");
       database.ref("/players/"+key).set({
         name: name,
         status
+      });
+
+      database.ref("/messages/"+key).set({
+        message:'',
+        timesStamp:'',
       });
       
     }
@@ -251,7 +272,7 @@ var connectedRef = database.ref(".info/connected");
 
     // This function is run whenever the user presses a key.
     document.onkeyup = function(event) {
-      if(event.target.id === 'player-input'){
+      if(event.target.id === 'player-input' || event.target.id === 'message-input'){
         return; // exclude on key up on input
       }  
 
@@ -389,3 +410,72 @@ var connectedRef = database.ref(".info/connected");
           },2500);
         }
     }
+
+    // messaging
+    database.ref('/messages/').on('child_changed', function(snapshot) {
+      if(snapshot.child("message").exists()){
+        console.log(snapshot.key, snapshot.val().message);
+        if(snapshot.key == key) {
+          $(".messages").append(`
+          <div style="display:none;" class="message player1-message">
+            ${name} &nbsp; <br><span>${snapshot.val().message}</span>
+          </div>`);
+        }
+        if(snapshot.key == challengerId) {
+          $(".messages").append(`
+          <div style="display:none;" class="message player2-message">
+           &nbsp; ${challenger}<br><span>${snapshot.val().message}</span>
+          </div>`);
+        }
+        $(".messages div:hidden").fadeIn();
+        $(".messages").animate({ scrollTop: $(document).height() }, "slow");
+      }
+    });
+
+    $(".message-send").on("click",function(e){
+      e.preventDefault();
+      $("#chat").submit();
+    });
+  
+    $("#chat input").on("focus",function(){
+      $(this).parent().removeClass("error")
+    }).bind('keypress', alphaNumericOnly);
+   
+    $("#chat").on("submit",function(e){
+      e.preventDefault();
+      if( $("#message-input").val().length < 2 ){
+        
+        $(this).addClass("error");
+      
+      } else {
+        
+        var message = $("#message-input").val().toString();
+        var timesStamp = Math.round(new Date().getTime()/1000);
+        $("#message-input").val(""); // empty the input
+        database.ref("/messages/"+key).update({
+          message: message,
+          timesStamp: timesStamp
+        });
+
+      }
+    });
+
+    function alphaOnly(event) {
+      var value = String.fromCharCode(event.which);
+      var pattern = new RegExp(/[a-z]/i);
+      if (event.keyCode === 13) {
+        return; // return key
+      } else {
+        return pattern.test(value);
+      }
+   }
+
+   function alphaNumericOnly(event) {
+    var value = String.fromCharCode(event.which);
+    var pattern = new RegExp(/^[a-zA-Z0-9 "!?.-]+$/i);
+    if (event.keyCode === 13) {
+      return; // return key
+    } else {
+      return pattern.test(value);
+    }
+ }
