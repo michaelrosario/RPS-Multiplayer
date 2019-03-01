@@ -308,9 +308,20 @@ var connectedRef = database.ref(".info/connected");
 
     function updateMultiplayerGame(input){
 
-       // Determines which key was pressed.
-       var saveChoice = input.toLowerCase();
-       var timesStamp = Math.round(new Date().getTime()/1000);
+      // Determines which key was pressed.
+      var saveChoice = input.toLowerCase();
+      var timesStamp = Math.round(new Date().getTime()/1000);
+
+      if(saveChoice === "r"){
+        $("#rock").addClass("active");
+      }
+      if(saveChoice === "p"){
+        $("#paper").addClass("active");
+      }
+      if(saveChoice === "s"){
+        $("#scissors").addClass("active");
+      }
+
         database.ref("/players/"+key).update({
           currentChoice: saveChoice,
           timesStamp: timesStamp
