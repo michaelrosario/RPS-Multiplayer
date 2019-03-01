@@ -472,7 +472,7 @@ var connectedRef = database.ref(".info/connected");
 
    function alphaNumericOnly(event) {
     var value = String.fromCharCode(event.which);
-    var pattern = new RegExp(/^[a-zA-Z0-9 "!?.-]+$/i);
+    var pattern = new RegExp(/^[a-zA-Z0-9 '"!?.-]+$/i);
     if (event.keyCode === 13) {
       return; // return key
     } else {
