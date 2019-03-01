@@ -239,7 +239,7 @@ div {
 
 .status P { 
 	font-size: 30px; 
-	line-height: 1em !important; 
+	line-height: 0.7em !important; 
 }
 
 .status.ready {

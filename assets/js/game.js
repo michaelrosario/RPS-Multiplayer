@@ -11,6 +11,7 @@
   var ties = 0;
   var round = 1;
   var ready = false;
+  var currentUserReady = true; // check is user clicks
   var key = Math.round(new Date().getTime()/1000);
 
 // Initialize Firebase
@@ -144,6 +145,7 @@ var connectedRef = database.ref(".info/connected");
     
     $(".player2").text(challenger);
     $("#messaging .messages").empty();
+    $("#messaging").find("input").attr("placeholder",`Send a message to ${challenger}`);
     $("#messaging").slideDown();
     $(".Item"+challengerId).html(`You are now playing with <strong>${challengerName}</strong>.`);
 
@@ -195,8 +197,7 @@ var connectedRef = database.ref(".info/connected");
         userTime = data.val().timesStamp;
         $(".status").removeClass("ready").hide().html(`<p>Waiting for ${challenger}...</p>`).fadeIn();
       }
-    }
-    if(!challengerChoice && challenger && data.key == challengerId){
+    } else if(!challengerChoice && challenger && data.key == challengerId){
       if(challengerTime != data.val().timesStamp){
         challengerTime = data.val().timesStamp;
         challengerChoice = data.val().currentChoice;
@@ -268,15 +269,16 @@ var connectedRef = database.ref(".info/connected");
       
     $(".status").addClass("ready");
 
-    var currentUserReady = true;
-
     // This function is run whenever the user presses a key.
     document.onkeyup = function(event) {
+      
       if(event.target.id === 'player-input' || event.target.id === 'message-input'){
         return; // exclude on key up on input
       }  
 
-      var userInput = event.key.toLowerCase();
+      if(currentUserReady){
+        var userInput = event.key.toLowerCase();
+      }
 
       if ((userInput === "r") || (userInput === "p") || (userInput === "s") && currentUserReady) {
         
@@ -284,7 +286,7 @@ var connectedRef = database.ref(".info/connected");
           currentUserReady = false;
           var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
           runGame(event.key,computerGuess);
-        } else if(ready){
+        } else if(ready) {
           currentUserReady = false;
           updateMultiplayerGame(event.key);
         }
@@ -292,22 +294,31 @@ var connectedRef = database.ref(".info/connected");
       }  
     }
 
-    $(".button").on("mouseup touchstart",function(){
-      var choice = $(this).attr("data-option");
-      if(ready && !challenger && currentUserReady){
-        currentUserReady = false;
-        var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
-        runGame(choice,computerGuess);
-      } else if(ready && currentUserReady){
-        currentUserReady = false;
-        updateMultiplayerGame(choice);
-      }
-      return false;
+    $(".button").on("mousedown",function(e){
+      
+      e.preventDefault();
 
+      if(currentUserReady){
+        var userInput = $(this).attr("data-option");
+      }
+      
+      if ((userInput === "r") || (userInput === "p") || (userInput === "s") && currentUserReady) {
+
+        if(ready && !challenger){
+          currentUserReady = false;
+          var computerGuess = computerChoices[Math.floor(Math.random() * computerChoices.length)];
+          runGame(userInput,computerGuess);
+        } else if(ready) {
+          currentUserReady = false;
+          updateMultiplayerGame(userInput);
+        }
+      }
+
+      return false;
     });
 
     function updateMultiplayerGame(input){
-
+     
       // Determines which key was pressed.
       var saveChoice = input.toLowerCase();
       var timesStamp = Math.round(new Date().getTime()/1000);
@@ -322,10 +333,10 @@ var connectedRef = database.ref(".info/connected");
         $("#scissors").addClass("active");
       }
 
-        database.ref("/players/"+key).update({
-          currentChoice: saveChoice,
-          timesStamp: timesStamp
-        });
+      database.ref("/players/"+key).update({
+        currentChoice: saveChoice,
+        timesStamp: timesStamp
+      });
 
     }
 
@@ -425,14 +436,13 @@ var connectedRef = database.ref(".info/connected");
     // messaging
     database.ref('/messages/').on('child_changed', function(snapshot) {
       if(snapshot.child("message").exists()){
-        console.log(snapshot.key, snapshot.val().message);
+        
         if(snapshot.key == key) {
           $(".messages").append(`
           <div style="display:none;" class="message player1-message">
             ${name} &nbsp; <br><span>${snapshot.val().message}</span>
           </div>`);
-        }
-        if(snapshot.key == challengerId) {
+        } else if(snapshot.key == challengerId) {
           $(".messages").append(`
           <div style="display:none;" class="message player2-message">
            &nbsp; ${challenger}<br><span>${snapshot.val().message}</span>
