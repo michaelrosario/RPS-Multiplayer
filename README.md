@@ -8,9 +8,8 @@ Play against the computer, or if a challenger is available, play with them!
 
 Press 'r' for ROCK, 'p' for PAPER, or 's' for SCISSORS or click the appropriate button to play.
 
-
-<strong>Playing with challengers</strong>
+<h4>Playing with challengers</h4>
 When you request to play with a challenger, you take turns choosing Rock, Paper or Scissors.  There is a chat feature to taunt or cheer your opponent.
 
-<h4>Authors</h4>
+<h3>Authors</h3>
 Michael Rosario
