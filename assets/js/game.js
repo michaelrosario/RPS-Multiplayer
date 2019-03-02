@@ -96,9 +96,9 @@ var connectedRef = database.ref(".info/connected");
         if(currentKey !== key && player.status == key){
         $(".challenger").html(`<div class="playerChallenge Item${currentKey}">${player.name} wants to play with you! &nbsp; <a href="#" data-username='${player.name}' data-player='${currentKey}'>Accept</a></div>`);
         } else if(currentKey !== key && !player.currentlyPlaying){
-          $(".challenger").append(`<div class="playersList Item${currentKey}">${player.name} is now available! &nbsp; <a href="#" data-username='${player.name}' data-player='${currentKey}'>Play Now</a></div>`);
+          $(".challenger").append(`<div class="playersList Item${currentKey}">Invite ${player.name} to play! &nbsp; <a href="#" data-username='${player.name}' data-player='${currentKey}'>Play Now</a></div>`);
         } else if(currentKey !== key && player.currentlyPlaying) {
-          $(".challenger").append(`<div class="playersList Item${currentKey}">${player.name} is currently playing...`);
+          $(".challenger").append(`<p>${player.name} is currently playing...</p>`);
         } else if((snapshot.numChildren() - currentlyPlaying) < 2 &&  $(".challenger").find("div").length === 0) {
             $(".challenger").html(`<p>Waiting for Challengers...</p>`);
         }
@@ -121,7 +121,7 @@ var connectedRef = database.ref(".info/connected");
       ties: 0,
     });
 
-    $(".Item"+challengerId).html(`Asking <strong>${challengerName}</strong> to play... Please wait...`);
+    $(".Item"+challengerId).html(`<p>Asking <strong>${challengerName}</strong> to play... Please wait...</p>`);
 
   });
 
@@ -148,7 +148,7 @@ var connectedRef = database.ref(".info/connected");
     $("#messaging .messages").empty();
     $("#messaging").find("input").attr("placeholder",`Send a message to ${challenger}`);
     $("#messaging").slideDown();
-    $(".Item"+challengerId).html(`You are now playing with <strong>${challengerName}</strong>.`);
+    $(".Item"+challengerId).html(`<p>You are now playing with <strong>${challengerName}</strong>.</p>`);
 
   });
 
@@ -452,6 +452,11 @@ var connectedRef = database.ref(".info/connected");
         $(".messages div:hidden").fadeIn();
         $(".messages").animate({ scrollTop: $(document).height() }, "slow");
       }
+    });
+
+    $(".messages").on('click',function(e){
+      e.preventDefault();
+      $("#chat input").focus();
     });
 
     $(".message-send").on("click",function(e){

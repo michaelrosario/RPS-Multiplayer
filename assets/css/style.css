@@ -258,7 +258,7 @@ div {
 
 .challenger {
 	width: 90%;
-	opacity: 0.4;
+	opacity: 1;
 	border: 1px dashed #CCC;
 	margin: 50px auto;
 	padding: 30px;
@@ -315,7 +315,7 @@ div {
 .playerChallenge a,
 .playersList a { float: right; margin-top: -12px; }
 
-.playerChallenge { color: #555 !important; background: #FFF; }
+.playerChallenge { color: #999 !important; background: #EEE; opacity: 1; }
 .playerChallenge a:hover {
 	color: #333;
 	border-color: #333;
