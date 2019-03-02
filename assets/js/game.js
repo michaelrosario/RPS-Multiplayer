@@ -86,6 +86,7 @@ var connectedRef = database.ref(".info/connected");
           });
 
           $("#messaging .messages").empty();
+          $("#messaging").find("input").attr("placeholder",`Send a message to ${challenger}`);
           $("#messaging").slideDown();
 
         }
