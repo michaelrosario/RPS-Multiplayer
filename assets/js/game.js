@@ -256,17 +256,11 @@ var connectedRef = database.ref(".info/connected");
         ties = parseInt(snapshot.val().ties) || 0;
         losses = parseInt(snapshot.val().losses) || 0;
         status = parseInt(snapshot.val().status) || 0;
-    
-        $("#wins").html(`<span>wins:</span> ${wins}`);
-        $("#losses").html(`<span>losses:</span> ${losses}`);
-        $("#ties").html(`<span>ties:</span> ${ties}`);
       }
 
     });
 
-    $("#wins").html(`<span>wins:</span> ${wins}`);
-    $("#losses").html(`<span>losses:</span> ${losses}`);
-    $("#ties").html(`<span>ties:</span> ${ties}`);
+    displayScore();
       
     $(".status").addClass("ready");
 
@@ -388,6 +382,7 @@ var connectedRef = database.ref(".info/connected");
             wins++;
             setTimeout(function(){ 
               $("#wins").addClass("active");
+              displayScore();
               $(".status").hide().html("You won!").addClass("win").fadeIn();
             }, 1500 );
             
@@ -399,6 +394,7 @@ var connectedRef = database.ref(".info/connected");
             ties++;
             setTimeout(function(){ 
                $("#ties").addClass("active");
+               displayScore();
                $(".status").hide().html("It's a Tie!").addClass("tie").fadeIn(); 
              }, 1500 );
             database.ref("/players/"+key).update({
@@ -409,6 +405,7 @@ var connectedRef = database.ref(".info/connected");
             losses++;
             setTimeout(function(){ 
               $("#losses").addClass("active");
+              displayScore();
               $(".status").hide().html("You lost!").addClass("loss").fadeIn();
             }, 1500 );
 
@@ -505,4 +502,10 @@ var connectedRef = database.ref(".info/connected");
     } else {
       return pattern.test(value);
     }
+ }
+
+ function displayScore(){
+  $("#wins").html(`<span>wins:</span> ${wins}`);
+  $("#losses").html(`<span>losses:</span> ${losses}`);
+  $("#ties").html(`<span>ties:</span> ${ties}`);
  }
