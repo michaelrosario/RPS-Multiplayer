@@ -13,3 +13,6 @@ When you request to play with a challenger, you take turns choosing Rock, Paper 
 
 <h3>Authors</h3>
 Michael Rosario
+
+Play the game at:
+https://michaelrosario.github.io/RPS-Multiplayer/index.html
